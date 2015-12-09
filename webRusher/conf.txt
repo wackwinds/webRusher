@@ -1,0 +1,5 @@
+#回放的目标url
+targetUrl: http://cq01-rdqa-dev041.cq01.baidu.com:8920
+
+#-1表示有几核就开几个线程, 0表示使用默认值
+cpuNumForThread: -1
