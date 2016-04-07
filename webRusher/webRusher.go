@@ -27,7 +27,7 @@ var mainProcessChan chan bool
 var threadContralChan chan bool
 
 type webRusher struct {
-	attacker webAttacker.WebAttacker
+	attacker *webAttacker.WebAttacker
 	replayFilePath string
 }
 
@@ -90,7 +90,11 @@ func parseLine(line string, wr webRusher){
 		defer func(){<-threadContralChan}()
 	}
 	
-	wr.attacker.Attack(line)
+	rsp, err := wr.attacker.Attack(line)
+	
+	if nil == err{
+		wr.attacker.BackDeal(rsp)
+	}
 }
 
 func (wr webRusher) DealWithLine(line string) {
@@ -115,11 +119,9 @@ func (wr webRusher) dealWithReplayFile(){
 
 func Run(){	
 	wr := new(webRusher)
+	wr.attacker = webAttacker.NewWebAttacker()
 	wr.getInitConf()		
 	wr.dealWithReplayFile()
-	
-	wa := webAttacker.NewWebAttacker()
-	fmt.Println(wa)
 	
 	// sleep some time for workers to start
 	time.Sleep(time.Second * 1)
